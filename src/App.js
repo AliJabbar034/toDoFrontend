@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+
+
+import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import LoginScreen from './pages/LoginScreen'
+import SignUpScreen from './pages/SignUpScreen'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import HomseScreen from './pages/HomseScreen'
+import PrivateLayout from './Header/PrivateLayout'
+import { Provider } from 'react-redux'
+import store from './store/store'
 
 function App() {
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+         staleTime:0
+      },
+    },
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  
+   <QueryClientProvider client={queryClient}>
+   <Provider store={store}>
+   <BrowserRouter basename='/'>
+    <Routes>
+      <Route path='/' element={<PrivateLayout/>} >
+    <Route  index element={<HomseScreen/>} /> </Route>
+      <Route path='/login' element={<LoginScreen/>} />
+      <Route path='/signup' element={<SignUpScreen/>} />
+    
+    </Routes>
+    </BrowserRouter>
+   </Provider>
+   </QueryClientProvider>
+ 
+  )
 }
 
-export default App;
+export default App
