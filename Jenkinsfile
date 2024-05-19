@@ -1,13 +1,30 @@
 pipeline {
-    agent any
-    
+    agent {
+        docker {
+            image 'node:alpine'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+    environment {
+        GIT_REPO = 'https://github.com/AliJabbar034/toDoFrontend.git'
+    }
     stages {
-        stage('Build and Deploy') {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: "${env.GIT_REPO}"
+            }
+        }
+        stage('Build') {
             steps {
                 script {
-                    // Build and deploy the React app using Docker
-                    docker.build('my-react-app', '-f Dockerfile .')
-                    docker.image('my-react-app').run('-p 8080:80 -d')
+                    docker.build('alijabbar/tsefront:latest')
+                }
+            }
+        }
+        stage('Run') {
+            steps {
+                script {
+                    docker.image('alijabbar/tsefront:latest').run('-p 80:80')
                 }
             }
         }
