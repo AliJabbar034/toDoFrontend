@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:alpine'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
     environment {
         GIT_REPO = 'https://github.com/AliJabbar034/toDoFrontend.git'
     }
@@ -17,14 +12,16 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    docker.build('alijabbar/tsefront:latest')
+                    // Build the Docker image
+                    def customImage = docker.build('alijabbar/tsefront:latest')
                 }
             }
         }
         stage('Run') {
             steps {
                 script {
-                    docker.image('alijabbar/tsefront:latest').run('-p 80:80')
+                    // Run the Docker container
+                    def runContainer = docker.image('alijabbar/tsefront:latest').run('-p 80:80')
                 }
             }
         }
